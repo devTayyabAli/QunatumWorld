@@ -1,0 +1,21 @@
+/*  make a class .spin the use a spinning animation */
+
+.spinner {
+    /* it should spin 360 */
+    animation: spin 4s linear infinite;
+
+}
+
+@keyframes spin {
+    0% {
+        transform: rotate(0deg);
+    }
+
+    100% {
+        transform: rotate(360deg);
+    }
+}
+
+.bg-succes{
+    background-color: #CBFA46;
+}
