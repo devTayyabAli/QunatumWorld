@@ -126,8 +126,8 @@ const LARTokenWithdrawal = () => {
 
             "type":"netincome"
 
-
           });
+
           saveResult = saveResult.data.data;
           setspinner(false);
           if (saveResult == "SUCCESSFUL") {

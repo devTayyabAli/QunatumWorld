@@ -70,16 +70,11 @@ function Transfer_ActivationFund() {
         try {
 
             const acc = await loadWeb3();
-            let res = await API.get(`/getDashboardValues?id=${uId}`)
+            let res = await API.get(`/userDashboard?uid=${uId}`)
             console.log('betawallet', res.data.data[0])
 
             res = res.data.data[0]
 
-            console.log("topid", topid);
-            console.log("uId", uId);
-
-            console.log(acc);
-            console.log(res.address);
             //if (res.address == acc) {
             let responce = await API?.post("/Transfer_ActivationFund", {
                 touid: topid,
@@ -105,7 +100,7 @@ function Transfer_ActivationFund() {
 
     const dashboard_coupon = async () => {
         try {
-            let responce = await API.get(`/getDashboardValues?id=${uId}`);
+            let responce = await API.get(`/userDashboard?uid=${uId}`);
             responce = responce.data.data;
             setLarBalance(responce[0].AdminFund);
             // setUserName(responce[0].UserName);
