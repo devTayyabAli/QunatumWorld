@@ -23,6 +23,7 @@ function UserInfo() {
   const [value, setValue] = useState(null);
   const [otpcheck, setotpcheck] = useState(false);
   const [spinnerload, setspinnerload] = useState(false);
+  const [getUserProfile, setgetUserProfile] = useState([])
 
   const [countries, setCountries] = useState({});
   const [selectedCountry, setSelectedCountry] = useState({
@@ -31,22 +32,45 @@ function UserInfo() {
 });
 
 
+
+
+
+  const getUserDetails=async()=>{
+    try {
+
+      let res= await API.get(`/GetUserInformationUser?userId=${user}`)
+      console.log("GetUserInformationUser",res.data.data[0]);
+      res=res.data.data[0]
+      // setgetUserProfile(res.data.data[0])
+      setFormValues(
+        {
+          email: res?.email,
+    walletAddress: res?.address,
+    mob: res?.mobile,
+    name: res?.f_name,
+    countryname: res?.countryname,
+    countryvalue: res?.countryvalue,
+        }
+      )
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   const [formValues, setFormValues] = useState({
-    email: userDetail.email,
-    walletAddress: userDetail.address,
-    mob: userDetail.mobile,
-    name: userDetail.f_name,
-    countryname: userDetail.countryname,
-    countryvalue: userDetail.countryvalue,
+    email: getUserProfile?.email,
+    walletAddress: getUserProfile?.address,
+    mob: getUserProfile?.mobile,
+    name: getUserProfile?.f_name,
+    countryname: getUserProfile?.countryname,
+    countryvalue: getUserProfile?.countryvalue,
     otp: "",
   });
-
   console.log("formValues", formValues);
 
   const handleForm = (e) => {
     const value = e.target.value;
-    console.log("forms value", value);
-    console.log("forms name", e.target.name);
+
     const newValue =
       e.target.name === "name"
         ? value.replace(/[^A-Z0-9_ ]/gi, "")
@@ -64,6 +88,7 @@ function UserInfo() {
     });
   };
   const onSubmitHandler = async (data) => {
+    console.log("Data",data);
     updateProfile(data)
     // setspinnerload(true)
     // otpcheck ? updateProfile(data) : sendOTP();
@@ -91,20 +116,20 @@ function UserInfo() {
     // e.preventDefault()
     setspinnerload(true);
 
-    console.log("formValues", formValues);
 
     let countryName = selectedCountry.label;
     let countryvalue = selectedCountry.value;
+    console.log("formValues", formValues);
 
     let res = await API.post("/updateprofile", {
-      uid: user,
-      //email: formValues.email,
+      user_id: user,
+      email: formValues.email,
       mobile: formValues.mob,
       accountaddress: formValues.walletAddress,
       f_name: formValues.name,
       countryname: countryName,
       countryvalue: countryvalue,
-      otp: formValues.otp,
+
     });
     console.log("updateprofile", res.data.data);
     if (res.data.data == "Update Successfull") {
@@ -128,6 +153,7 @@ function UserInfo() {
   let countryvalue = selectedCountry.value;
 
   useEffect(() => {
+    getUserDetails()
     fetch(
       "https://valid.layercode.workers.dev/list/countries?format=select&flags=true&value=code"
     )
@@ -230,7 +256,7 @@ function UserInfo() {
 
               /> */}
                 </div>
-                {otpcheck ? (
+                {/* {otpcheck ? (
                   <>
                     <div className="lar_inputWrper">
                       <label htmlFor="email">Enter Otp</label>
@@ -247,9 +273,22 @@ function UserInfo() {
                   </>
                 ) : (
                   <></>
-                )}
+                )} */}
               </form>
-              {otpcheck ? (
+              <div className="lar_button">
+                    <button onClick={() => updateProfile()}>
+                      {spinnerload == true ? (
+                        <>
+                          <div class="spinner-border" role="status">
+                            <span class="visually-hidden">Loading...</span>
+                          </div>{" "}
+                        </>
+                      ) : (
+                        " Update Profile"
+                      )}
+                    </button>
+                  </div>
+              {/* {otpcheck ? (
                 <>
                   <div className="lar_button">
                     <button onClick={() => updateProfile()}>
@@ -270,7 +309,7 @@ function UserInfo() {
                   <div className="lar_button">
                     <button
                       onClick={() => sendOTP()}
-                      // disabled={(formValues.name&&formValues.email&&formValues.walletAddress&&formValues.country)?false:true}
+
                     >
                       {spinnerload == true ? (
                         <>
@@ -284,7 +323,7 @@ function UserInfo() {
                     </button>
                   </div>
                 </>
-              )}
+              )} */}
             </div>
           </div>
         </div>
